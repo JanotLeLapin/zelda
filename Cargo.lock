@@ -2420,6 +2420,7 @@ dependencies = [
  "audiotags",
  "markup",
  "sqlx",
+ "urlencoding",
 ]
 
 [[package]]

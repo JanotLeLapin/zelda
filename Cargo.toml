@@ -10,3 +10,4 @@ markup = "0.15"
 sqlx = { version = "0.7", features = ["runtime-tokio", "tls-rustls", "postgres", "uuid"] }
 
 audiotags = "0.5"
+urlencoding = "2"
