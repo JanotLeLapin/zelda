@@ -2,10 +2,10 @@ use sqlx::{Pool, Postgres, Error, FromRow};
 use std::{fs, path::PathBuf};
 
 #[derive(FromRow, Debug)]
-pub struct Album<'a> {
-    pub path: &'a str,
-    pub name: &'a str,
-    pub cover_mime: &'a str,
+pub struct Album {
+    pub path: String,
+    pub name: String,
+    pub cover_mime: String,
     pub cover: Vec<u8>,
 }
 

@@ -1,4 +1,7 @@
 mod db;
+mod web;
+
+use actix_web::{web::Data, App, HttpServer};
 
 use sqlx::postgres::PgPoolOptions;
 
@@ -9,6 +12,11 @@ async fn main() {
         .connect("postgres://postgres:postgres@localhost:5432")
         .await.unwrap();
 
-    let root = "/var/music/JESUS IS KING";
-    db::scan_album(&pool, root.into()).await.unwrap();
+    HttpServer::new(move || {
+        App::new()
+            .app_data(Data::new(pool.clone()))
+            .service(web::index::page)
+    })
+        .bind(("0.0.0.0", 4000)).unwrap()
+        .run().await.unwrap();
 }

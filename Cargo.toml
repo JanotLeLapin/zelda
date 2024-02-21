@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 actix-web = { version = "4", features = ["rustls"] }
+markup = "0.15"
 
 sqlx = { version = "0.7", features = ["runtime-tokio", "tls-rustls", "postgres", "uuid"] }
 
