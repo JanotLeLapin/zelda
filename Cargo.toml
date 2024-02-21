@@ -1,0 +1,11 @@
+[package]
+name = "zelda"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+actix-web = { version = "4", features = ["rustls"] }
+
+sqlx = { version = "0.7", features = ["runtime-tokio", "tls-rustls", "postgres", "uuid"] }
+
+audiotags = "0.5"
