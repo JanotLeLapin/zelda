@@ -2,18 +2,18 @@ use sqlx::{Pool, Postgres, Error, FromRow};
 use std::{fs, path::PathBuf};
 
 #[derive(FromRow, Debug)]
-pub struct Album {
-    pub path: String,
-    pub name: String,
-    pub cover_mime: String,
+pub struct Album<'a> {
+    pub path: &'a str,
+    pub name: &'a str,
+    pub cover_mime: &'a str,
     pub cover: Vec<u8>,
 }
 
 #[derive(FromRow, Debug)]
-pub struct Track {
-    pub path: String,
-    pub album: String,
-    pub name: String,
+pub struct Track<'a> {
+    pub path: &'a str,
+    pub album: &'a str,
+    pub name: &'a str,
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
@@ -30,11 +30,10 @@ pub async fn scan_album(pool: &Pool<Postgres>, path: PathBuf) -> Result<()> {
                 let tags = audiotags::Tag::new().read_from_path(&p).unwrap();
 
                 match tags.title() {
-                    Some(title) => tracks.push(Track {
-                        path: p.to_str().unwrap().to_string(),
-                        name: title.to_string(),
-                        album: p.parent().unwrap().to_str().unwrap().to_string(),
-                    }),
+                    Some(title) => tracks.push((
+                        p.to_str().unwrap().to_string(),
+                        title.to_string(),
+                    )),
                     None => {},
                 };
                 if name.is_none() { match tags.album_title() {
@@ -71,11 +70,11 @@ pub async fn scan_album(pool: &Pool<Postgres>, path: PathBuf) -> Result<()> {
         .bind(data)
         .execute(pool).await?;
 
-    for track in tracks {
+    for (track_path, track_name) in tracks {
         sqlx::query("INSERT INTO tracks (path, album, name) VALUES ($1, $2, $3) ON CONFLICT (path) DO NOTHING")
-            .bind(track.path)
+            .bind(track_path)
             .bind(path.to_str().unwrap())
-            .bind(track.name)
+            .bind(track_name)
             .execute(pool).await?;
     }
 
