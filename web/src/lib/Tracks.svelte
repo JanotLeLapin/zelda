@@ -1,4 +1,6 @@
 <script>
+  import { audio } from "./store"
+
   export let id;
 
   const root = "http://192.168.1.91:4000"
@@ -18,6 +20,7 @@
     {:then data}
       {#each data as track}
         <div class="track">
+          <button on:click={() => audio.set(root + "/stream/" + encodeURIComponent(track.path))}> P </button>
           <h3>{track.name}</h3>
         </div>
       {/each}
@@ -42,6 +45,7 @@
   }
 
   .track {
+    display: flex;
     margin: 1rem 0;
   }
 </style>
