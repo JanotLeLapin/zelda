@@ -22,9 +22,7 @@
     {:then data}
       {#each data as track}
         <div class="track">
-          <button on:click={() => {
-            audio.set(root + "/stream/" + encodeURIComponent(track.path))
-          }}><Play size={24} color="#fff" /></button>
+          <button on:click={() => audio.set(track)}><Play size={24} color="#fff" /></button>
           <h3>{track.name}</h3>
         </div>
       {/each}

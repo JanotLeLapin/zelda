@@ -12,7 +12,21 @@
   import Albums from "./lib/Albums.svelte"
   import Tracks from "./lib/Tracks.svelte"
 
+  const root = "http://192.168.1.91:4000"
+
   let paused = true;
+  let duration = 1;
+
+  let time = 0;
+
+  function setTimeDom(seconds) {
+		let element = document.getElementById('audio')
+		element.currentTime = seconds
+	}
+
+  $: audioPath = $audio.path;
+  $: audioName = $audio.name;
+  $: audioAlbum = $audio.album;
 </script>
 
 <Router>
@@ -29,19 +43,38 @@
 
 <footer class="container">
   <div class="player">
-    <audio
-      src={$audio}
-      bind:paused={paused}
-      autoplay
-    />
-    <button class="play" on:click={() => paused = !paused}>
-      {#if paused}
-        <Play size={28} />
-      {:else}
-        <Pause size={28} />
+    <div class="current">
+      {#if $audio}
+        <img src={root + "/cover/" + encodeURIComponent(audioAlbum)} alt="">
+        <h3>{audioName}</h3>
       {/if}
-    </button>
+    </div>
+    <div class="controls">
+      <button class="play" on:click={() => paused = !paused}>
+        {#if paused}
+          <Play size={28} />
+        {:else}
+          <Pause size={28} />
+        {/if}
+      </button>
+      <br />
+      <input
+        type="range"
+        min={0} max={duration}
+        bind:value={time}
+        on:input={e => setTimeDom(parseInt(e.currentTarget.value))}
+      />
+    </div>
+    <div class="extra"></div>
   </div>
+  <audio
+    id="audio"
+    src={audioPath ? root + "/stream/" + encodeURIComponent(audioPath) : null}
+    bind:paused={paused}
+    bind:duration={duration}
+    on:timeupdate={e => time = e.currentTarget.currentTime}
+    autoplay
+  />
 </footer>
 
 <style>
@@ -74,6 +107,22 @@ footer button {
 
 .player {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.current {
+  display: flex;
+  align-items: center;
+}
+
+.current img {
+  border-radius: 4px;
+  width: 64px;
+  margin-right: 1rem;
+}
+
+.controls {
+  text-align: center;
 }
 </style>
