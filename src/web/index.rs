@@ -1,6 +1,6 @@
 use crate::db::{Result, Album, Track};
 
-use actix_web::{web, get, http::header, HttpResponse};
+use actix_web::{web, get, http::header, Error, HttpResponse};
 use sqlx::{Pool, Postgres};
 
 markup::define! {
@@ -29,6 +29,24 @@ pub async fn page(data: web::Data<Pool<Postgres>>) -> HttpResponse {
     HttpResponse::Ok()
         .insert_header(header::ContentType::html())
         .body(Index { albums }.to_string())
+}
+
+#[get("/stream/{id}")]
+pub async fn stream(path: web::Path<String>) -> HttpResponse {
+    let path = std::path::PathBuf::from(path.into_inner().as_str());
+    let file = match std::fs::read(&path) {
+        Ok(data) => data,
+        Err(_) => return HttpResponse::NotFound().finish(),
+    };
+    let body = futures::stream::once(futures::future::ok::<_, Error>(web::Bytes::from(file)));
+    HttpResponse::Ok()
+        .content_type(match path.extension().unwrap().to_str().unwrap() {
+            "flac" => "audio/flac",
+            "mp3" => "audio/mp3",
+            "m4a" => "audio/mp4",
+            _ => unimplemented!(),
+        })
+        .streaming(body)
 }
 
 #[get("/cover/{id}")]

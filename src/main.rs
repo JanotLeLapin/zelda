@@ -21,6 +21,7 @@ async fn main() {
             .app_data(Data::new(pool.clone()))
             .service(web::index::page)
             .service(web::index::cover)
+            .service(web::index::stream)
     })
         .bind(("0.0.0.0", 4000)).unwrap()
         .run().await.unwrap();
