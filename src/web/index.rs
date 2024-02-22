@@ -3,32 +3,14 @@ use crate::db::{Result, Album, Track};
 use actix_web::{web, get, http::header, Error, HttpResponse};
 use sqlx::{Pool, Postgres};
 
-markup::define! {
-    Index(albums: Vec<Album>) {
-        @markup::doctype()
-        html {
-            body {
-                .albums {
-                    @for album in albums {
-                        .album {
-                            img[src=format!("/cover/{}", urlencoding::encode(&album.path).to_string()), style="width: 64px;"];
-                            h3 { @album.name }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
 #[get("/")]
 pub async fn page(data: web::Data<Pool<Postgres>>) -> HttpResponse {
     let albums = sqlx::query_as::<sqlx::Postgres, Album>("SELECT * FROM albums")
         .fetch_all(data.get_ref()).await.unwrap();
 
     HttpResponse::Ok()
-        .insert_header(header::ContentType::html())
-        .body(Index { albums }.to_string())
+        .content_type("application/json")
+        .body(serde_json::to_string(&albums).unwrap())
 }
 
 #[get("/stream/{id}")]

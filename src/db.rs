@@ -1,15 +1,14 @@
 use sqlx::{Pool, Postgres, Error, FromRow};
+use serde::{Serialize, Deserialize};
 use std::{fs, path::PathBuf};
 
-#[derive(FromRow, Debug)]
+#[derive(Serialize, Deserialize, FromRow, Debug)]
 pub struct Album {
     pub path: String,
     pub name: String,
-    pub cover_mime: String,
-    pub cover: Vec<u8>,
 }
 
-#[derive(FromRow, Debug)]
+#[derive(Serialize, Deserialize, FromRow, Debug)]
 pub struct Track<'a> {
     pub path: &'a str,
     pub album: &'a str,

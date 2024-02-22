@@ -20,6 +20,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "actix-cors"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f9e772b3bcafe335042b5db010ab7c09013dad6eac4915c91d8d50902769f331"
+dependencies = [
+ "actix-utils",
+ "actix-web",
+ "derive_more",
+ "futures-util",
+ "log",
+ "once_cell",
+ "smallvec",
+]
+
+[[package]]
 name = "actix-http"
 version = "3.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1027,26 +1042,6 @@ name = "log"
 version = "0.4.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b5e6163cb8c49088c2c36f57875e58ccd8c87c7427f7fbd50ea6710b2f3f2e8f"
-
-[[package]]
-name = "markup"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "74a887ad620fe1022257343ac77fcdd3720e92888e1b2e66e1b7a4707f453898"
-dependencies = [
- "markup-proc-macro",
-]
-
-[[package]]
-name = "markup-proc-macro"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9ab6ee21fd1855134cacf2f41afdf45f1bc456c7d7f6165d763b4647062dd2be"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.50",
-]
 
 [[package]]
 name = "md-5"
@@ -2444,10 +2439,12 @@ checksum = "dff9641d1cd4be8d1a070daf9e3773c5f67e78b4d9d42263020c057706765c04"
 name = "zelda"
 version = "0.1.0"
 dependencies = [
+ "actix-cors",
  "actix-web",
  "audiotags",
  "futures",
- "markup",
+ "serde",
+ "serde_json",
  "sqlx",
  "urlencoding",
 ]
