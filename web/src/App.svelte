@@ -1,5 +1,5 @@
 <script>
-  import { Router, Route } from "svelte-routing"
+  import { Router, Route, Link } from "svelte-routing"
 
   import { audio } from "./lib/store"
 
@@ -10,8 +10,14 @@
 </script>
 
 <Router>
-  <Route path="/albums" component={Albums} />
-  <Route path="/albums/:id" component={Tracks} />
+  <nav class="sidebar">
+    <Link to="/albums">Albums</Link>
+  </nav>
+
+  <main>
+    <Route path="/albums" component={Albums} />
+    <Route path="/albums/:id" component={Tracks} />
+  </main>
 </Router>
 
 <footer class="container">
@@ -25,6 +31,15 @@
 </footer>
 
 <style>
+main {
+  margin-left: 64px;
+}
+
+.sidebar {
+  position: fixed;
+  width: 64px;
+}
+
 footer {
   position: fixed;
   bottom: 0;
