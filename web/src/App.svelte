@@ -1,6 +1,7 @@
 <script>
   import { Router, Route, Link } from "svelte-routing"
   import Play from "svelte-material-icons/Play.svelte"
+  import Pause from "svelte-material-icons/Pause.svelte"
   import Album from "svelte-material-icons/Album.svelte"
 
   import { audio } from "./lib/store"
@@ -8,7 +9,7 @@
   import Albums from "./lib/Albums.svelte"
   import Tracks from "./lib/Tracks.svelte"
 
-  let paused = false;
+  let paused = true;
 </script>
 
 <Router>
@@ -29,7 +30,13 @@
       bind:paused={paused}
       autoplay
     />
-    <button class="play" on:click={() => paused = !paused}><Play size={28} /></button>
+    <button class="play" on:click={() => paused = !paused}>
+      {#if paused}
+        <Play size={28} />
+      {:else}
+        <Pause size={28} />
+      {/if}
+    </button>
   </div>
 </footer>
 
