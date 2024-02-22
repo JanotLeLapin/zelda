@@ -1,8 +1,11 @@
 <script>
   import { Router, Route, Link } from "svelte-routing"
+
+  import Home from "svelte-material-icons/Home.svelte"
+  import Album from "svelte-material-icons/Album.svelte"
+
   import Play from "svelte-material-icons/Play.svelte"
   import Pause from "svelte-material-icons/Pause.svelte"
-  import Album from "svelte-material-icons/Album.svelte"
 
   import { audio } from "./lib/store"
 
@@ -14,6 +17,7 @@
 
 <Router>
   <nav class="sidebar">
+    <Link to="/"><Home size={32} /></Link>
     <Link to="/albums"><Album size={32} /></Link>
   </nav>
 
@@ -41,14 +45,16 @@
 </footer>
 
 <style>
-main {
-  margin-left: 64px;
-}
-
 .sidebar {
   position: fixed;
+  top: 0;
+  left: 0;
   padding: 16px;
   width: 64px;
+}
+
+main {
+  margin: 2rem 0 12rem 128px;
 }
 
 footer {
