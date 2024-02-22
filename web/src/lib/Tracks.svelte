@@ -1,7 +1,7 @@
 <script>
   import Play from "svelte-material-icons/Play.svelte"
 
-  import { audio } from "./store"
+  import { queue } from "./store"
 
   export let id;
 
@@ -20,9 +20,12 @@
     {#await tracks}
       Loading...
     {:then data}
+      <button on:click={_ => {
+        queue.set(data);
+      }}>Click me!</button>
       {#each data as track}
         <div class="track">
-          <button on:click={() => audio.set(track)}><Play size={24} color="#fff" /></button>
+          <button on:click={() => queue.set([track])}><Play size={24} color="#fff" /></button>
           <h3>{track.name}</h3>
         </div>
       {/each}

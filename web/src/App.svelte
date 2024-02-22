@@ -7,7 +7,7 @@
   import Play from "svelte-material-icons/Play.svelte"
   import Pause from "svelte-material-icons/Pause.svelte"
 
-  import { audio } from "./lib/store"
+  import { queue } from "./lib/store"
 
   import Albums from "./lib/Albums.svelte"
   import Tracks from "./lib/Tracks.svelte"
@@ -24,9 +24,8 @@
 		element.currentTime = seconds
 	}
 
-  $: audioPath = $audio.path;
-  $: audioName = $audio.name;
-  $: audioAlbum = $audio.album;
+  let track = null;
+  queue.subscribe(v => track = v.at(0) || null);
 </script>
 
 <Router>
@@ -44,9 +43,18 @@
 <footer class="container">
   <div class="player">
     <div class="current">
-      {#if $audio}
-        <img src={root + "/cover/" + encodeURIComponent(audioAlbum)} alt="">
-        <h3>{audioName}</h3>
+      {#if track}
+        <img src={root + "/cover/" + encodeURIComponent(track.album)} alt="">
+        <h3>{track.name}</h3>
+        <audio
+          id="audio"
+          src={track.path ? root + "/stream/" + encodeURIComponent(track.path) : null}
+          bind:paused={paused}
+          bind:duration={duration}
+          on:timeupdate={e => time = e.currentTarget.currentTime}
+          on:ended={_ => queue.update(q => q.slice(1))}
+          autoplay
+        />
       {/if}
     </div>
     <div class="controls">
@@ -67,14 +75,6 @@
     </div>
     <div class="extra"></div>
   </div>
-  <audio
-    id="audio"
-    src={audioPath ? root + "/stream/" + encodeURIComponent(audioPath) : null}
-    bind:paused={paused}
-    bind:duration={duration}
-    on:timeupdate={e => time = e.currentTarget.currentTime}
-    autoplay
-  />
 </footer>
 
 <style>
