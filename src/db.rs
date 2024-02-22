@@ -9,10 +9,10 @@ pub struct Album {
 }
 
 #[derive(Serialize, Deserialize, FromRow, Debug)]
-pub struct Track<'a> {
-    pub path: &'a str,
-    pub album: &'a str,
-    pub name: &'a str,
+pub struct Track {
+    pub path: String,
+    pub album: String,
+    pub name: String,
 }
 
 pub type Result<T> = std::result::Result<T, Error>;

@@ -1,16 +1,27 @@
-use crate::db::{Result, Album, Track};
+use crate::db::{Album, Track};
 
 use actix_web::{web, get, http::header, Error, HttpResponse};
 use sqlx::{Pool, Postgres};
 
-#[get("/")]
-pub async fn page(data: web::Data<Pool<Postgres>>) -> HttpResponse {
+#[get("/albums")]
+pub async fn albums(data: web::Data<Pool<Postgres>>) -> HttpResponse {
     let albums = sqlx::query_as::<sqlx::Postgres, Album>("SELECT * FROM albums")
         .fetch_all(data.get_ref()).await.unwrap();
 
     HttpResponse::Ok()
         .content_type("application/json")
         .body(serde_json::to_string(&albums).unwrap())
+}
+
+#[get("/albums/{id}")]
+pub async fn tracks(data: web::Data<Pool<Postgres>>, path: web::Path<String>) -> HttpResponse {
+    let tracks = sqlx::query_as::<sqlx::Postgres, Track>("SELECT * FROM tracks WHERE album = $1")
+        .bind(path.into_inner())
+        .fetch_all(data.get_ref()).await.unwrap();
+
+    HttpResponse::Ok()
+        .content_type("application/json")
+        .body(serde_json::to_string(&tracks).unwrap())
 }
 
 #[get("/stream/{id}")]

@@ -20,7 +20,7 @@ async fn main() {
         let cors = actix_cors::Cors::default().allowed_origin("http://192.168.1.91:5173");
         App::new()
             .app_data(Data::new(pool.clone()))
-            .service(web::index::page)
+            .service(web::index::albums)
             .service(web::index::cover)
             .service(web::index::stream)
             .wrap(cors)

@@ -1,6 +1,6 @@
 <script>
   const root = "http://192.168.1.91:4000"
-  const albums = fetch(root).then(res => res.json());
+  const albums = fetch(root + "/albums").then(res => res.json());
 </script>
 
 <main>
