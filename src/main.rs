@@ -21,6 +21,7 @@ async fn main() {
         App::new()
             .app_data(Data::new(pool.clone()))
             .service(web::index::albums)
+            .service(web::index::tracks)
             .service(web::index::cover)
             .service(web::index::stream)
             .wrap(cors)
