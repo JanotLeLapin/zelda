@@ -6,7 +6,6 @@
 
   import { queue } from "./store"
 
-  const root = "http://192.168.1.91:4000"
   const size = 28;
 
   let paused = true;
@@ -27,11 +26,11 @@
   <div class="player">
     <div class="current">
       {#if track}
-        <img src={root + "/cover/" + encodeURIComponent(track.album)} alt="">
+        <img src={import.meta.env.VITE_API_URL + "/cover/" + encodeURIComponent(track.album)} alt="">
         <h3>{track.name}</h3>
         <audio
           id="audio"
-          src={track.path ? root + "/stream/" + encodeURIComponent(track.path) : null}
+          src={import.meta.env.VITE_API_URL + "/stream/" + encodeURIComponent(track.path)}
           bind:paused={paused}
           bind:duration={duration}
           on:timeupdate={e => time = e.currentTarget.currentTime}

@@ -1,8 +1,7 @@
 <script>
   import { Link } from "svelte-routing";
 
-  const root = "http://192.168.1.91:4000"
-  const albums = fetch(root + "/albums").then(res => res.json());
+  const albums = fetch(import.meta.env.VITE_API_URL + "/albums").then(res => res.json());
 </script>
 
 <main>
@@ -14,7 +13,7 @@
       {#each data as album}
         <div class="album">
           <Link to={"/albums/" + encodeURIComponent(album.path)}>
-            <img src={root + "/cover/" + encodeURIComponent(album.path)} alt="">
+            <img src={import.meta.env.VITE_API_URL + "/cover/" + encodeURIComponent(album.path)} alt="">
             <h3>{album.name}</h3>
           </Link>
         </div>

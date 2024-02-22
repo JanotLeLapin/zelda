@@ -24,6 +24,7 @@ async fn main() {
             .service(web::index::tracks)
             .service(web::index::cover)
             .service(web::index::stream)
+            .service(actix_files::Files::new("/", "./web/dist"))
             .wrap(cors)
     })
         .bind(("0.0.0.0", 4000)).unwrap()

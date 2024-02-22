@@ -5,13 +5,12 @@
 
   export let id;
 
-  const root = "http://192.168.1.91:4000"
-  const tracks = fetch(root + "/albums/" + encodeURIComponent(id)).then(res => res.json());
+  const tracks = fetch(import.meta.env.VITE_API_URL + "/albums/" + encodeURIComponent(id)).then(res => res.json());
 </script>
 
 <main>
   <header>
-    <img src={root + "/cover/" + encodeURIComponent(id)} alt="">
+    <img src={import.meta.env.VITE_API_URL + "/cover/" + encodeURIComponent(id)} alt="">
     <div>
       <p>Album</p>
     </div>
