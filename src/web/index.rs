@@ -15,7 +15,7 @@ pub async fn albums(data: web::Data<Pool<Postgres>>) -> HttpResponse {
 
 #[get("/albums/{id}")]
 pub async fn tracks(data: web::Data<Pool<Postgres>>, path: web::Path<String>) -> HttpResponse {
-    let tracks = sqlx::query_as::<sqlx::Postgres, Track>("SELECT * FROM tracks WHERE album = $1")
+    let tracks = sqlx::query_as::<sqlx::Postgres, Track>("SELECT * FROM tracks WHERE album = $1 ORDER BY pos ASC")
         .bind(path.into_inner())
         .fetch_all(data.get_ref()).await.unwrap();
 

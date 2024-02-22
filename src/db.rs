@@ -23,6 +23,7 @@ pub async fn scan_album(pool: &Pool<Postgres>, path: PathBuf) -> Result<()> {
     let mut cover = None;
     for e in fs::read_dir(&path).unwrap().filter_map(|e| e.ok()) {
         let p = e.path();
+        println!("{p:?}");
         let ext = p.extension().and_then(|ext| ext.to_str());
         match ext {
             Some("flac") | Some("mp3") | Some("m4a") => {
@@ -69,11 +70,13 @@ pub async fn scan_album(pool: &Pool<Postgres>, path: PathBuf) -> Result<()> {
         .bind(data)
         .execute(pool).await?;
 
-    for (track_path, track_name) in tracks {
-        sqlx::query("INSERT INTO tracks (path, album, name) VALUES ($1, $2, $3) ON CONFLICT (path) DO NOTHING")
+    tracks.sort_by(|a, b| a.0.cmp(&b.0));
+    for (i, (track_path, track_name)) in tracks.iter().enumerate() {
+        sqlx::query("INSERT INTO tracks (path, album, name, pos) VALUES ($1, $2, $3, $4) ON CONFLICT (path) DO NOTHING")
             .bind(track_path)
             .bind(path.to_str().unwrap())
             .bind(track_name)
+            .bind(i as i16)
             .execute(pool).await?;
     }
 
