@@ -4,6 +4,7 @@
 </script>
 
 <main>
+  <h1>Albums</h1>
   <div class="albums">
     {#await albums}
       <p>Loading...</p>
@@ -21,15 +22,27 @@
 </main>
 
 <style>
+.albums {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2rem;
+  margin: 2rem;
+}
+
 .album {
-  display: flex;
   align-items: center;
+  border-radius: 4px;
+  background-color: var(--bg-2);
   gap: 1rem;
-  margin: 1rem;
+  padding: 1rem;
+}
+
+.album h3 {
+  margin: 1rem 0;
 }
 
 .album img {
-  width: 48px;
+  width: 100%;
   border-radius: 4px;
 }
 </style>

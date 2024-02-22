@@ -1,4 +1,11 @@
 :root {
+  --bg-1: #0f172a;
+  --bg-2: #1e293b;
+  --bg-3: #334155;
+  --fg-1: #f8fafc;
+  --fg-2: #e2e8f0;
+  --fg-3: #94a3b8;
+
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -11,4 +18,8 @@
 
 * {
   margin: 0;
+}
+
+body {
+  background-color: var(--bg-1);
 }
