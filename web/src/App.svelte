@@ -1,5 +1,7 @@
 <script>
   import { Router, Route, Link } from "svelte-routing"
+  import Play from "svelte-material-icons/Play.svelte"
+  import Album from "svelte-material-icons/Album.svelte"
 
   import { audio } from "./lib/store"
 
@@ -11,7 +13,7 @@
 
 <Router>
   <nav class="sidebar">
-    <Link to="/albums">Albums</Link>
+    <Link to="/albums"><Album size={32} /></Link>
   </nav>
 
   <main>
@@ -25,9 +27,10 @@
     <audio
       src={$audio}
       bind:paused={paused}
+      autoplay
     />
-    <button on:click={() => paused = !paused}>Pause</button>
-    </div>
+    <button class="play" on:click={() => paused = !paused}><Play size={28} /></button>
+  </div>
 </footer>
 
 <style>
@@ -37,6 +40,7 @@ main {
 
 .sidebar {
   position: fixed;
+  padding: 16px;
   width: 64px;
 }
 
@@ -46,6 +50,13 @@ footer {
   width: 100vw;
   background-color: var(--bg-2);
   padding: 1rem;
+}
+
+footer button {
+  width: 40px;
+  height: 40px;
+  background-color: var(--fg-1);
+  border-radius: 999px;
 }
 
 .player {

@@ -1,4 +1,6 @@
 <script>
+  import Play from "svelte-material-icons/Play.svelte"
+
   import { audio } from "./store"
 
   export let id;
@@ -20,7 +22,9 @@
     {:then data}
       {#each data as track}
         <div class="track">
-          <button on:click={() => audio.set(root + "/stream/" + encodeURIComponent(track.path))}> P </button>
+          <button on:click={() => {
+            audio.set(root + "/stream/" + encodeURIComponent(track.path))
+          }}><Play size={24} color="#fff" /></button>
           <h3>{track.name}</h3>
         </div>
       {/each}
