@@ -1,0 +1,12 @@
+music_path = "/var/music"
+
+[web]
+port = 4000
+host = "192.168.1.91"
+ui_path = "./web/dist"
+
+[database]
+port = 5432
+host = "localhost"
+user = "postgres"
+password = "postgres"

@@ -13,7 +13,17 @@ pub struct AppData {
 
 #[actix_web::main]
 async fn main() {
-    let config: config::Config = toml::from_str(&std::fs::read_to_string("./zelda.toml").unwrap()).unwrap();
+    let mut args = std::env::args().skip(1);
+
+    let mut config = None;
+    while let Some(arg) = args.next() {
+        match arg.as_str() {
+            "--config" => config = args.next(),
+            _ => unimplemented!(),
+        };
+    };
+
+    let config: config::Config = toml::from_str(&std::fs::read_to_string(config.unwrap_or("./zelda.toml".to_string())).unwrap()).unwrap();
     let pool = {
         let config::Database { port, host, user, password } = config.database;
         PgPoolOptions::new()
