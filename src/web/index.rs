@@ -1,12 +1,11 @@
 use crate::db::{Album, Track};
 
 use actix_web::{web, get, http::header, Error, HttpResponse};
-use sqlx::{Pool, Postgres};
 
 #[get("/albums")]
-pub async fn albums(data: web::Data<Pool<Postgres>>) -> HttpResponse {
+pub async fn albums(data: web::Data<crate::AppData>) -> HttpResponse {
     let albums = sqlx::query_as::<sqlx::Postgres, Album>("SELECT * FROM albums")
-        .fetch_all(data.get_ref()).await.unwrap();
+        .fetch_all(&data.get_ref().pool).await.unwrap();
 
     HttpResponse::Ok()
         .content_type("application/json")
@@ -14,10 +13,10 @@ pub async fn albums(data: web::Data<Pool<Postgres>>) -> HttpResponse {
 }
 
 #[get("/albums/{id}")]
-pub async fn tracks(data: web::Data<Pool<Postgres>>, path: web::Path<String>) -> HttpResponse {
+pub async fn tracks(data: web::Data<crate::AppData>, path: web::Path<String>) -> HttpResponse {
     let tracks = sqlx::query_as::<sqlx::Postgres, Track>("SELECT * FROM tracks WHERE album = $1 ORDER BY pos ASC")
         .bind(path.into_inner())
-        .fetch_all(data.get_ref()).await.unwrap();
+        .fetch_all(&data.get_ref().pool).await.unwrap();
 
     HttpResponse::Ok()
         .content_type("application/json")
@@ -25,15 +24,17 @@ pub async fn tracks(data: web::Data<Pool<Postgres>>, path: web::Path<String>) ->
 }
 
 #[get("/stream/{id}")]
-pub async fn stream(path: web::Path<String>) -> HttpResponse {
-    let path = std::path::PathBuf::from(path.into_inner().as_str());
-    let file = match std::fs::read(&path) {
+pub async fn stream(data: web::Data<crate::AppData>, path: web::Path<String>) -> HttpResponse {
+    let mut file_path = std::path::PathBuf::from(&data.get_ref().music_path);
+    file_path.push(path.into_inner().as_str());
+
+    let file = match std::fs::read(&file_path) {
         Ok(data) => data,
         Err(_) => return HttpResponse::NotFound().finish(),
     };
     let body = futures::stream::once(futures::future::ok::<_, Error>(web::Bytes::from(file)));
     HttpResponse::Ok()
-        .content_type(match path.extension().unwrap().to_str().unwrap() {
+        .content_type(match file_path.extension().unwrap().to_str().unwrap() {
             "flac" => "audio/flac",
             "mp3" => "audio/mp3",
             "m4a" => "audio/mp4",
@@ -43,10 +44,10 @@ pub async fn stream(path: web::Path<String>) -> HttpResponse {
 }
 
 #[get("/cover/{id}")]
-pub async fn cover(data: web::Data<Pool<Postgres>>, path: web::Path<String>) -> HttpResponse {
+pub async fn cover(data: web::Data<crate::AppData>, path: web::Path<String>) -> HttpResponse {
     let (mime, data) = match sqlx::query_as::<sqlx::Postgres, (String, Vec<u8>)>("SELECT cover_mime, cover FROM albums WHERE path = $1")
         .bind(path.into_inner())
-        .fetch_one(data.get_ref()).await {
+        .fetch_one(&data.get_ref().pool).await {
             Ok(album) => album,
             Err(_) => return HttpResponse::NotFound().finish(),
         };
