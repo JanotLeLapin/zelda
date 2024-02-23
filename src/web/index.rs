@@ -56,7 +56,7 @@ pub async fn cover(data: web::Data<crate::AppData>, path: web::Path<String>) -> 
         .insert_header(match mime.as_str() {
             "png" => header::ContentType::png(),
             "jpg" => header::ContentType::jpeg(),
-            _ => { unimplemented!() }
+            _ => return HttpResponse::NotFound().finish(),
         })
         .body(data)
 }

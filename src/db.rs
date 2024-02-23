@@ -60,7 +60,7 @@ pub async fn scan_album(pool: &Pool<Postgres>, path: PathBuf) -> Result<()> {
         };
     };
 
-    let (mime, data) = cover.unwrap();
+    let (mime, data) = cover.unwrap_or(("".to_string(), vec![]));
 
     let album_path = path.file_name().unwrap().to_str().unwrap();
     sqlx::query("INSERT INTO albums (path, name, cover_mime, cover) VALUES ($1, $2, $3, $4) ON CONFLICT (path) DO NOTHING")
