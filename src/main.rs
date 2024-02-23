@@ -48,7 +48,7 @@ async fn main() {
             .service(web::index::tracks)
             .service(web::index::cover)
             .service(web::index::stream)
-            .service(actix_files::Files::new("/", config.web.ui_path.clone()))
+            .service(actix_files::Files::new("/web", config.web.ui_path.clone()))
             .wrap(cors)
     })
         .bind((host.to_string(), port)).unwrap()
