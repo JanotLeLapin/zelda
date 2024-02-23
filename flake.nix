@@ -18,6 +18,9 @@
     }));
   in {
     devShells = eachSystem ({ pkgs, ... }: { default = pkgs.callPackage ./shell.nix {}; });
-    packages = eachSystem ({ pkgs, ... }: { default = pkgs.callPackage ./default.nix {}; });
+    packages = eachSystem ({ pkgs, ... }: {
+      server = pkgs.callPackage ./default.nix {};
+      web = pkgs.callPackage ./web {};
+    });
   };
 }
